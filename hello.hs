@@ -3,7 +3,8 @@ body_ content = "<body>" <> content <> "</body>"
 head_ content = "<head>" <> content <> "</head>"
 title_ title = "<title>" <> title <> "</title>"
 
-wrapHtml content = "<html><body>" <> content <> "</body></html>"
-main = putStrLn (html_ (body_ myhtml))
+makeHtml title content = html_ (head_ (title_ title) <> body_ content)
 
-myhtml = "Hello World"
+main = putStrLn myhtml
+
+myhtml = makeHtml "My page title" "My page content"

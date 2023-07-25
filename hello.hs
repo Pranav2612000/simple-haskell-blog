@@ -1,3 +1,9 @@
+newtype Html = Html String
+newtype Structure = Structure String
+
+append_ :: Structure -> Structure -> Structure
+append_ (Structure a) (Structure b) = Structure ( a <> b ) 
+
 el:: String -> String -> String
 el tag content =
   "<" <> tag <> ">" <> content <> "</" <> tag <> ">"

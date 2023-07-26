@@ -5,6 +5,7 @@ module Html
   Structure,
   html_,
   p_,
+  ul_,
   h1_,
   append_,
   render

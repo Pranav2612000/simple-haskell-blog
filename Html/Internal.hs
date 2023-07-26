@@ -42,6 +42,9 @@ h1_ = Structure . el "h1" . escape
 ul_ :: [Structure] -> Structure
 ul_ = Structure . el "ul" . concat . map (el "li" . getStructureString)
 
+ol_ :: [Structure] -> Structure
+ol_ = Structure . el "ol" . concat . map (el "li" . getStructureString)
+
 escape :: String -> String
 escape = 
   let

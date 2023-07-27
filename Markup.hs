@@ -15,3 +15,22 @@ data Structure
  | OrderedList [String]
  | CodeBlock [String]
 
+parse :: String -> Document
+parse = parseLines [] . lines
+
+trim :: String -> String
+trim = unwords . words
+
+parseLines :: [String] -> [String] -> Document
+parseLines currentParagraph txts =
+  let
+    paragraph = Paragraph ( unlines (reverse currentParagraph) )
+  in
+    case txts of
+      [] -> [paragraph]
+      currentLine : rest ->
+        if trim currentLine == ""
+          then
+            paragraph : parseLines [] rest
+          else
+            parseLines (currentLine : currentParagraph) rest

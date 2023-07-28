@@ -30,6 +30,15 @@ parseLines context txts =
     -- Heading 1 case
     ('*' : ' ' : line) : rest ->
       maybe id (:) context (Heading 1 (trim line) : parseLines Nothing rest)
+
+    -- CodeBlock case
+    ('>' : ' ' : line) : rest ->
+      case context of
+        Just(CodeBlock list) ->
+          parseLines (Just (CodeBlock ( list <> [line] ))) rest
+        _ ->
+          maybe id (:) context (parseLines (Just (CodeBlock [line] )) rest)
+
     -- Unordered list case
     ('-' : ' ' : line) : rest ->
       case context of

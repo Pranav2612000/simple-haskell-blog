@@ -46,6 +46,14 @@ parseLines context txts =
           parseLines (Just (UnorderedList ( list <> [trim line]))) rest
         _ ->
           maybe id (:) context (parseLines (Just (UnorderedList [trim line] )) rest)
+
+    -- OrderedList Case
+    ('#' : ' ' : line) : rest ->
+      case context of
+        Just (OrderedList list) ->
+          parseLines (Just (OrderedList (list <> [trim line]))) rest
+        _ ->
+          maybe id (:) context (parseLines (Just (OrderedList [trim line])) rest)
     -- Paragraph case
     currentLine : rest ->
       let

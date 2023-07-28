@@ -6,11 +6,10 @@ myhtml =
   html_
     "Page title"
     (
-      append_
-        (h1_ "Heading")
+        h1_ "Heading" <>
+
         (
-          append_
-            (p_ "Paragraph #1")
-            (p_ "Paragraph #2")
+            p_ "Paragraph #1" <>
+            p_ "Paragraph #2"
         )
     )

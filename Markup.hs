@@ -1,7 +1,8 @@
 module Markup
   (
     Document,
-    Structure(..)
+    Structure(..),
+    parse
   )
 where
 

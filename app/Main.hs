@@ -18,7 +18,7 @@ main = do
       (title, inputHandle) <-
         case input of
           Stdin ->
-            pure ("", stding)
+            pure ("", stdin)
           InputFile file ->
             (,) file <$> openFile file ReadMode
     

@@ -78,11 +78,6 @@ pConvertDir :: Parser Options
 pConvertDir =
   ConvertDir <$> pInputDir <*> pOutputDir
 
-subparser :: Mod CommandFields a -> Parser a
-command :: String -> ParserInfo a -> Mod CommandFields a
-
-info :: Parser a -> InfoMod a -> ParserInfo a
-
 pConvertSingleInfo :: ParserInfo Options
 pConvertSingleInfo =
   info

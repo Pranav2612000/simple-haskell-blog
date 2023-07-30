@@ -1,6 +1,8 @@
 module Html.Internal
 where
 
+import Numeric.Natural
+
 newtype Html = Html String
 newtype Structure = Structure String
 type Title = String
@@ -39,6 +41,9 @@ p_ = Structure . el "p" . escape
 
 code_ :: String -> Structure
 code_ = Structure . el "pre" . escape
+
+h_ :: Natural -> String -> Structure
+h_ n = Structure . el ("h" <> show n) . escape
 
 h1_ :: String -> Structure
 h1_ = Structure . el "h1" . escape

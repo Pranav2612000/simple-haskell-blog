@@ -8,6 +8,7 @@ module Html
   code_,
   ul_,
   ol_,
+  h_,
   h1_,
   render
 )

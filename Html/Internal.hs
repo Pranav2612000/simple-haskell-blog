@@ -25,6 +25,9 @@ el:: String -> String -> String
 el tag content =
   "<" <> tag <> ">" <> content <> "</" <> tag <> ">"
 
+empty_ :: Structure
+empty_ = Structure ""
+
 html_ :: Title -> Structure -> Html
 html_ title content =
   Html
@@ -67,3 +70,9 @@ escape =
         _ -> [c]
   in
     concat . map escapeChar
+
+concatStructure :: [Structure] -> Structure
+concatStructure list =
+  case list of
+    [] -> empty_
+    x: xs -> x <> concatStructure xs

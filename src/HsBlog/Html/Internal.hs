@@ -1,4 +1,4 @@
-module Html.Internal
+module HsBlog.Html.Internal
 where
 
 import Numeric.Natural

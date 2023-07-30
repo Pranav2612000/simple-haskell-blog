@@ -1,7 +1,12 @@
+module HsBlog
+  ( main
+  )
+  where
+
 import System.Directory
 import System.Environment
-import Html
-import Convert
+import HsBlog.Html
+import HsBlog.Convert
 
 main :: IO ()
 main = do
@@ -27,15 +32,3 @@ main = do
           writeFile outputFile (process inputFile content)
     _ ->
       putStrLn "Usage: runghc Main.hs [ -- <input-file> <output-file>]"
-
-myhtml = 
-  html_
-    "Page title"
-    (
-        h1_ "Heading" <>
-
-        (
-            p_ "Paragraph #1" <>
-            p_ "Paragraph #2"
-        )
-    )

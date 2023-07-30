@@ -16,15 +16,15 @@ main = do
     [inputFile, outputFile] -> do
       content <- readFile inputFile
       fileExists <- doesFileExist outputFile
-      case fileExists of
-        False -> do
-          writeFile outputFile (process inputFile content)
-        True -> do
+      if fileExists
+        then do
           putStrLn "Output file already exists. Overwrite ( Y )"
           answer <- getLine
           case answer of
             "Y" ->
               writeFile outputFile (process inputFile content)
+        else do
+          writeFile outputFile (process inputFile content)
     _ ->
       putStrLn "Usage: runghc Main.hs [ -- <input-file> <output-file>]"
 

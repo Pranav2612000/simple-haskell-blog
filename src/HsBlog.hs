@@ -1,34 +1,18 @@
 module HsBlog
-  ( main
+  ( convertSingle,
+    convertDir
   )
   where
 
-import System.Directory
-import System.Environment
-import HsBlog.Html
+import HsBlog.Html as Html
 import HsBlog.Convert
 
-main :: IO ()
-main = do
-  args <- getArgs
-  case args of
-    -- No arguments: reading from stdin and writing to stdout
-    [] -> do
-      content <- getContents
-      putStrLn (process "Empty title" content)
+import System.IO
 
-    -- With input and output file paths as program arguments
-    [inputFile, outputFile] -> do
-      content <- readFile inputFile
-      fileExists <- doesFileExist outputFile
-      if fileExists
-        then do
-          putStrLn "Output file already exists. Overwrite ( Y )"
-          answer <- getLine
-          case answer of
-            "Y" ->
-              writeFile outputFile (process inputFile content)
-        else do
-          writeFile outputFile (process inputFile content)
-    _ ->
-      putStrLn "Usage: runghc Main.hs [ -- <input-file> <output-file>]"
+convertSingle :: Html.Title -> Handle -> Handle -> IO ()
+convertSingle title input output = do
+  content <- hGetContents input
+  hPutStrLn output (process title content)
+
+convertDir :: FilePath -> FilePath -> IO ()
+convertDir = error "Not implemented"

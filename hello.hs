@@ -4,29 +4,29 @@ import Html
 import Convert
 
 main :: IO ()
--- main = putStrLn (render myhtml)
-main =
-  getArgs >>= \args ->
-    case args of
-      -- No arguments: reading from stdin and writing to stdout
-      [] ->
-        getContents >>= \content ->
-          putStrLn (process "Empty title" content)
-      -- With input and output file paths as program arguments
-      [inputFile, outputFile] ->
-        readFile inputFile >>= \content ->
-          doesFileExist outputFile >>= \fileExists ->
-            case fileExists of
-              False ->
-                writeFile outputFile (process inputFile content)
-              True ->
-                putStrLn "Output file already exists. Overwrite ( Y/N )" *>
-                  getLine >>= \answer ->
-                    case answer of
-                      "Y" ->
-                        writeFile outputFile (process inputFile content)
-      _ ->
-        putStrLn "Usage: runghc Main.hs [ -- <input-file> <output-file>]"
+main = do
+  args <- getArgs
+  case args of
+    -- No arguments: reading from stdin and writing to stdout
+    [] -> do
+      content <- getContents
+      putStrLn (process "Empty title" content)
+
+    -- With input and output file paths as program arguments
+    [inputFile, outputFile] -> do
+      content <- readFile inputFile
+      fileExists <- doesFileExist outputFile
+      case fileExists of
+        False -> do
+          writeFile outputFile (process inputFile content)
+        True -> do
+          putStrLn "Output file already exists. Overwrite ( Y )"
+          answer <- getLine
+          case answer of
+            "Y" ->
+              writeFile outputFile (process inputFile content)
+    _ ->
+      putStrLn "Usage: runghc Main.hs [ -- <input-file> <output-file>]"
 
 myhtml = 
   html_

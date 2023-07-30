@@ -2,6 +2,10 @@ module Convert where
 
 import qualified Markup
 import qualified Html
+import Data.Foldable
+
+convert :: Html.Title -> Markup.Document -> Html.Html
+convert title = Html.html_ title . foldMap convertStructure
 
 convertStructure :: Markup.Structure -> Html.Structure
 convertStructure structure =

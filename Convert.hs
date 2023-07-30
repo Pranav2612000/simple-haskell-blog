@@ -24,3 +24,7 @@ convertStructure structure =
 
     Markup.CodeBlock list ->
       Html.code_ (unlines list)
+
+process :: Html.Title -> String -> String
+process title = Html.render . convert title . Markup.parse
+

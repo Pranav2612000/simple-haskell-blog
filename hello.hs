@@ -1,6 +1,19 @@
+import System.Directory
+import System.Environment
 import Html
+import Convert
 
-main = putStrLn (render myhtml)
+main :: IO ()
+-- main = putStrLn (render myhtml)
+main =
+  getArgs >>= \args ->
+    case args of
+      -- No arguments: reading from stdin and writing to stdout
+      [] ->
+        getContents >>= \content ->
+          putStrLn (process "Empty title" content)
+      _ ->
+        putStrLn "Usage: runghc Main.hs [ -- <input-file> <output-file>]"
 
 myhtml = 
   html_

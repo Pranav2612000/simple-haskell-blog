@@ -5,6 +5,7 @@ import Numeric.Natural
 
 newtype Html = Html String
 newtype Structure = Structure String
+newtype Content = Content String
 type Title = String
 
 instance Semigroup Structure where
@@ -18,6 +19,11 @@ getStructureString :: Structure -> String
 getStructureString content = 
   case content of
     Structure str -> str
+
+getContentString :: Content -> String
+getContentString content =
+  case content of
+    Content cnt -> cnt
 
 render :: Html -> String
 render html =
@@ -42,14 +48,14 @@ html_ title content =
       )
     )
 
-p_ :: String -> Structure
-p_ = Structure . el "p" . escape
+p_ :: Content -> Structure
+p_ = Structure . el "p" . getContentString
 
 code_ :: String -> Structure
 code_ = Structure . el "pre" . escape
 
-h_ :: Natural -> String -> Structure
-h_ n = Structure . el ("h" <> show n) . escape
+h_ :: Natural -> Content -> Structure
+h_ n = Structure . el ("h" <> show n) . getContentString
 
 h1_ :: String -> Structure
 h1_ = Structure . el "h1" . escape

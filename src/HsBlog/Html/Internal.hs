@@ -34,6 +34,10 @@ el:: String -> String -> String
 el tag content =
   "<" <> tag <> ">" <> content <> "</" <> tag <> ">"
 
+elAttr :: String -> String -> String -> String
+elAttr tag attr content =
+  "<" <> tag <> " " <> attr <> ">" <> content <> "</" <> tag <> ">"
+
 empty_ :: Structure
 empty_ = Structure ""
 
@@ -65,6 +69,13 @@ ul_ = Structure . el "ul" . concat . map (el "li" . getStructureString)
 
 ol_ :: [Structure] -> Structure
 ol_ = Structure . el "ol" . concat . map (el "li" . getStructureString)
+
+txt_ :: String -> Content
+txt_ = Content . escape
+
+link_ :: FilePath -> Content -> Content
+link_ path content =
+  Content ( elAttr "a" ("href=\"" <> escape path <> "\"" ) (getContentString content) )
 
 escape :: String -> String
 escape = 

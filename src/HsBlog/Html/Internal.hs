@@ -15,6 +15,13 @@ instance Semigroup Structure where
 instance Monoid Structure where
   mempty = empty_
 
+instance Semigroup Content where
+  (<>) c1 c2 =
+    Content ( getContentString c1 <> getContentString c2 )
+
+instance Monoid Content where
+  mempty = Content ""
+
 getStructureString :: Structure -> String
 getStructureString content = 
   case content of
@@ -76,6 +83,16 @@ txt_ = Content . escape
 link_ :: FilePath -> Content -> Content
 link_ path content =
   Content ( elAttr "a" ("href=\"" <> escape path <> "\"" ) (getContentString content) )
+
+img_ :: FilePath -> Content
+img_ path =
+  Content $ "<img src=\"" <> escape path <> "\"/>"
+
+b_ :: Content -> Content
+b_ = Content . el "b" . getContentString
+
+i_ :: Content -> Content
+i_ = Content . el "i" . getContentString
 
 escape :: String -> String
 escape = 

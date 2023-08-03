@@ -35,6 +35,7 @@ library
   exposed-modules:
     HsBlog
       HsBlog.Convert
+      HsBlog.Directory
       HsBlog.Html
         HsBlog.Html.Internal
       HsBlog.Markup

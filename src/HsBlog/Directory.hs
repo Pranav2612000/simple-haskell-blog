@@ -1,5 +1,6 @@
 module HsBlog.Directory
   ( convertDirectory
+  , buildIndex
   )
 where
 

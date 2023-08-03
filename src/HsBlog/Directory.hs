@@ -71,3 +71,14 @@ applyIoOnList fn list =
       pure (file, maybeResult)
     )
     list
+
+filterAndReportFailures :: [(a, Either String b)] -> IO [(a, b)]
+filterAndReportFailures =
+  foldMap (\(file, contentOrErr) -> 
+    case contentOrErr of
+      Left err -> do
+        hPutStrLn stderr err
+        pure []
+      Right content ->
+        pure [(file, content)]
+    )

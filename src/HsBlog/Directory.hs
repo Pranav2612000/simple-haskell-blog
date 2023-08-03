@@ -82,3 +82,41 @@ filterAndReportFailures =
       Right content ->
         pure [(file, content)]
     )
+
+createOutputDirectoryOrExit :: FilePath -> IO ()
+createOutputDirectoryOrExit outputDir =
+  whenIO
+    (not <$> createOutputDirectory outputDir)
+    (hPutStrLn stderr "Cancelled." *> exitFailure)
+
+createOutputDirectory :: FilePath -> IO Bool
+createOutputDirectory dir = do
+  dirExists <- doesDirectoryExist dir
+  create <-
+    if dirExists
+        then do
+          override <- confirm "Output directory exists. Override (Y/N)?"
+          when override (removeDirectoryRecursive dir)
+          pure override
+        else
+          pure True
+  when create (createDirectory dir)
+  pure create
+
+confirm :: String -> IO Bool
+confirm question = do
+  putStrLn question
+  answer <- getLine
+  case answer of
+    "Y" -> pure True
+    "n" -> pure False
+    _ -> do
+      putStrLn "Invalid response. Use Y or n"
+      confirm question
+
+whenIO :: IO Bool -> IO () -> IO ()
+whenIO cond action = do
+  result <- cond
+  if result
+    then action
+    else pure ()

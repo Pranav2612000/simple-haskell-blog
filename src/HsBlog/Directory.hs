@@ -8,7 +8,6 @@ import qualified HsBlog.Html as Html
 import HsBlog.Convert (convert, convertStructure)
 
 import Data.List ( partition )
-import Data.Traversable (for)
 import Control.Monad (void, when)
 
 import System.IO (hPutStrLn, stderr)
@@ -148,6 +147,19 @@ buildIndex files =
         <> Html.h_ 2 ( Html.txt_ "Posts" )
         <> mconcat content 
       )
+
+copyFiles :: FilePath -> [FilePath] -> IO ()
+copyFiles outputDir files = do
+  let 
+    copyFromTo file = copyFile file (outputDir </> takeFileName file)
+  void $ applyIoOnList copyFromTo files >>= filterAndReportFailures
+
+writeFiles :: FilePath -> [(FilePath, String)] -> IO ()
+writeFiles outputDir files = do
+  let
+    writeFileContent (file, content) =
+      writeFile (outputDir <> file) content
+  void $ applyIoOnList writeFileContent files >>= filterAndReportFailures
 
 confirm :: String -> IO Bool
 confirm question = do

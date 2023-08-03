@@ -5,7 +5,7 @@ where
 
 import qualified HsBlog.Markup as Markup
 import qualified HsBlog.Html as Html
-import HsBlog.Convert (convert, convertStructure)
+import HsBlog.Convert (process, convert, convertStructure)
 
 import Data.List ( partition )
 import Data.Traversable (for)
@@ -102,6 +102,29 @@ createOutputDirectory dir = do
           pure True
   when create (createDirectory dir)
   pure create
+
+-- txtsToRenderedHtml :: [(FilePath, String)] -> [(FilePath, String)]
+-- txtsToRenderedHtml =
+--   map $ \(file, content) ->
+--     let
+--       updatedFile = (takeBaseName file <> ".html")
+--       htmlContent = process (takeBaseName file) content
+--     in
+--       (updatedFile, htmlContent)
+txtsToRenderedHtml :: [(FilePath, String)] -> [(FilePath, String)]
+txtsToRenderedHtml txtFiles =
+  let
+    txtOutputFiles = map toOutputMarkupFile txtFiles
+    index = ("index.html", buildIndex txtOutputFiles)
+  in
+    map (fmap Html.render) (index : map convertFile txtOutputFiles)
+
+toOutputMarkupFile :: (FilePath, String) -> (FilePath, Markup.Document)
+toOutputMarkupFile (file, content) =
+  (takeBaseName file <.> "html", Markup.parse content)
+
+convertFile :: (FilePath, Markup.Document) -> (FilePath, Html.Html)
+convertFile (file, doc) = (file, convert file doc)
 
 confirm :: String -> IO Bool
 confirm question = do

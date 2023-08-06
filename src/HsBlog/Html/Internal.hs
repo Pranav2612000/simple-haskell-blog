@@ -111,7 +111,7 @@ title_ :: String -> Head
 title_ title = Head ( el "title" (escape title) )
 
 stylesheet_ :: FilePath -> Head
-stylesheet_ sheet = Head ( elAttr "link" ("ref=\"stylesheet\" type=\"text/css\" href=\"" <> sheet <> "\"" ) "" )
+stylesheet_ sheet = Head ( elAttr "link" ("rel=\"stylesheet\" type=\"text/css\" href=\"" <> sheet <> "\"" ) "" )
 
 meta_ :: String -> String -> Head
 meta_ name content = Head ( elAttr "meta" ("name=\"" <> name <> "\" content=\"" <> content <> "\"") "")

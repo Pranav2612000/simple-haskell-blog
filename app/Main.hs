@@ -12,10 +12,10 @@ main :: IO()
 main = do
   options <- parse
   case options of
-    ConvertDir input output ->
-      HsBlog.convertDir HsBlog.defaultEnv input output
+    ConvertDir input output env ->
+      HsBlog.convertDir env input output
 
-    ConvertSingle input output ->
+    ConvertSingle input output env ->
       let
         withInputHandle :: (String -> Handle -> IO a) -> IO a
         withInputHandle action =
@@ -45,7 +45,7 @@ main = do
                 else
                     exitFailure
       in
-        withInputHandle (\title -> withOutputHandle . HsBlog.convertSingle HsBlog.defaultEnv title)
+        withInputHandle (\title -> withOutputHandle . HsBlog.convertSingle env title)
 
 confirm :: IO Bool
 confirm =

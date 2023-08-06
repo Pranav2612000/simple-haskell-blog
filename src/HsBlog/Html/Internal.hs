@@ -23,6 +23,13 @@ instance Semigroup Content where
 instance Monoid Content where
   mempty = Content ""
 
+instance Semigroup Head where
+  (<>) h1 h2 =
+    Head ( getHeadString h1 <> getHeadString h2 )
+
+instance Monoid Head where
+  mempty = Head ""
+
 getStructureString :: Structure -> String
 getStructureString content = 
   case content of
@@ -32,6 +39,11 @@ getContentString :: Content -> String
 getContentString content =
   case content of
     Content cnt -> cnt
+
+getHeadString :: Head -> String
+getHeadString htmlhead =
+  case htmlhead of
+    Head hd -> hd
 
 render :: Html -> String
 render html =
@@ -49,12 +61,12 @@ elAttr tag attr content =
 empty_ :: Structure
 empty_ = Structure ""
 
-html_ :: Title -> Structure -> Html
-html_ title content =
+html_ :: Head -> Structure -> Html
+html_ htmlhead content =
   Html
     ( el "html"
       (
-        el "head" (el "title" (escape title))
+        el "head" (getHeadString htmlhead)
         <>
         el "body" (getStructureString content)
       )

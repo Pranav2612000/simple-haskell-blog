@@ -7,6 +7,7 @@ where
 import qualified HsBlog.Markup as Markup
 import qualified HsBlog.Html as Html
 import HsBlog.Convert (convert, convertStructure)
+import HsBlog.Env (Env(..))
 
 import Data.List ( partition )
 import Control.Monad (void, when)
@@ -126,8 +127,8 @@ toOutputMarkupFile (file, content) =
 convertFile :: (FilePath, Markup.Document) -> (FilePath, Html.Html)
 convertFile (file, doc) = (file, convert file doc)
 
-buildIndex :: [(FilePath, Markup.Document)] -> Html.Html
-buildIndex files =
+buildIndex :: Env -> [(FilePath, Markup.Document)] -> Html.Html
+buildIndex env files =
   let
     content =
       map
@@ -143,7 +144,9 @@ buildIndex files =
         files
   in
     Html.html_
-      "Home" 
+      ( Html.title_ "Home" 
+        <> Html.stylesheet_ (eStylesheetPath env)
+      )
       ( Html.h_ 1 (Html.link_ "index.html" ( Html.txt_ "Blog" ) )
         <> Html.h_ 2 ( Html.txt_ "Posts" )
         <> mconcat content 

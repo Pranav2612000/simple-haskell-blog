@@ -30,12 +30,12 @@ import System.Directory
   , copyFile
   )
 
-convertDirectory :: FilePath -> FilePath -> IO()
-convertDirectory inputDir outputDir = do
+convertDirectory :: Env -> FilePath -> FilePath -> IO()
+convertDirectory env inputDir outputDir = do
   DirContents filesToProcess filesToCopy <- getDirFilesAndContent inputDir
   createOutputDirectoryOrExit outputDir
   let
-    outputHtmls = txtsToRenderedHtml filesToProcess
+    outputHtmls = txtsToRenderedHtml env filesToProcess
   copyFiles outputDir filesToCopy
   writeFiles outputDir outputHtmls
   putStrLn "Done."
@@ -112,20 +112,20 @@ createOutputDirectory dir = do
 --       htmlContent = process (takeBaseName file) content
 --     in
 --       (updatedFile, htmlContent)
-txtsToRenderedHtml :: [(FilePath, String)] -> [(FilePath, String)]
-txtsToRenderedHtml txtFiles =
+txtsToRenderedHtml :: Env -> [(FilePath, String)] -> [(FilePath, String)]
+txtsToRenderedHtml env txtFiles =
   let
     txtOutputFiles = map toOutputMarkupFile txtFiles
-    index = ("index.html", buildIndex txtOutputFiles)
+    index = ("index.html", buildIndex env txtOutputFiles)
   in
-    map (fmap Html.render) (index : map convertFile txtOutputFiles)
+    map (fmap Html.render) (index : map (convertFile env) txtOutputFiles)
 
 toOutputMarkupFile :: (FilePath, String) -> (FilePath, Markup.Document)
 toOutputMarkupFile (file, content) =
   (takeBaseName file <.> "html", Markup.parse content)
 
-convertFile :: (FilePath, Markup.Document) -> (FilePath, Html.Html)
-convertFile (file, doc) = (file, convert file doc)
+convertFile :: Env -> (FilePath, Markup.Document) -> (FilePath, Html.Html)
+convertFile env (file, doc) = (file, convert file env doc)
 
 buildIndex :: Env -> [(FilePath, Markup.Document)] -> Html.Html
 buildIndex env files =

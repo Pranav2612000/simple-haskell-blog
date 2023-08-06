@@ -39,6 +39,7 @@ library
       HsBlog.Html
         HsBlog.Html.Internal
       HsBlog.Markup
+      HsBlog.Env
   -- other-modules:
 
 executable hs-blog-gen

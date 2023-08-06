@@ -8,6 +8,7 @@ import qualified HsBlog.Markup as Markup
 import qualified HsBlog.Html as Html
 import HsBlog.Convert (convert, convertStructure)
 import HsBlog.Env (Env(..))
+import Control.Monad.Reader
 
 import Data.List ( partition )
 import Control.Monad (void, when)
@@ -112,23 +113,25 @@ createOutputDirectory dir = do
 --       htmlContent = process (takeBaseName file) content
 --     in
 --       (updatedFile, htmlContent)
-txtsToRenderedHtml :: Env -> [(FilePath, String)] -> [(FilePath, String)]
-txtsToRenderedHtml env txtFiles =
+txtsToRenderedHtml :: [(FilePath, String)] -> Reader Env [(FilePath, String)]
+txtsToRenderedHtml txtFiles = do
   let
     txtOutputFiles = map toOutputMarkupFile txtFiles
-    index = ("index.html", buildIndex env txtOutputFiles)
-  in
-    map (fmap Html.render) (index : map (convertFile env) txtOutputFiles)
+  index <- (,) "index.html" <$> buildIndex txtOutputFiles
+  htmlPages <- traverse convertFile txtOutputFiles
+  pure $ map (fmap Html.render) (index : htmlPages)
 
 toOutputMarkupFile :: (FilePath, String) -> (FilePath, Markup.Document)
 toOutputMarkupFile (file, content) =
   (takeBaseName file <.> "html", Markup.parse content)
 
-convertFile :: Env -> (FilePath, Markup.Document) -> (FilePath, Html.Html)
-convertFile env (file, doc) = (file, convert file env doc)
+convertFile :: (FilePath, Markup.Document) -> Reader Env (FilePath, Html.Html)
+convertFile (file, doc) = do
+  env <- ask
+  pure (file, convert file env doc)
 
-buildIndex :: Env -> [(FilePath, Markup.Document)] -> Html.Html
-buildIndex env files =
+buildIndex :: [(FilePath, Markup.Document)] -> Reader Env Html.Html
+buildIndex files =
   let
     content =
       map
@@ -143,14 +146,19 @@ buildIndex env files =
         )
         files
   in
-    Html.html_
-      ( Html.title_ "Home" 
-        <> Html.stylesheet_ (eStylesheetPath env)
-      )
-      ( Html.h_ 1 (Html.link_ "index.html" ( Html.txt_ "Blog" ) )
-        <> Html.h_ 2 ( Html.txt_ "Posts" )
-        <> mconcat content 
-      )
+    do
+      env <- ask
+      pure
+        (
+          Html.html_
+          ( Html.title_ "Home" 
+            <> Html.stylesheet_ (eStylesheetPath env)
+          )
+          ( Html.h_ 1 (Html.link_ "index.html" ( Html.txt_ "Blog" ) )
+            <> Html.h_ 2 ( Html.txt_ "Posts" )
+            <> mconcat content 
+          )
+        )
 
 copyFiles :: FilePath -> [FilePath] -> IO ()
 copyFiles outputDir files = do

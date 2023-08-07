@@ -37,17 +37,17 @@ simple = do
         (parse "")
         []
 
-    it "paragraph" $
+    it "paragraph" $ do
       shouldBe
         (parse "hello world")
         [Paragraph "hello world"]
 
-    it "heading 1" $
+    it "heading 1" $ do
       shouldBe
         (parse "* Heading 1")
         [Heading 1 "Heading 1"]
 
-    it "code" $
+    it "code" $ do
       shouldBe
         (parse "> main = putStrLn \"hello world\"")
         [CodeBlock ["main = putStrLn \"hello world\""]]

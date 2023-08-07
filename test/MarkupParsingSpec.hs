@@ -28,6 +28,7 @@ spec :: Spec
 spec = do
   describe "Markup parsing tests" $ do
     simple
+    multiline
 
 simple :: Spec
 simple = do

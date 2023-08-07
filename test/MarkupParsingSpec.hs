@@ -6,6 +6,11 @@ import HsBlog.Markup
 spec :: Spec
 spec = do
   describe "Markup parsing tests" $ do
+    simple
+
+simple :: Spec
+simple = do
+  describe "simple" $ do
     it "empty" $
       shouldBe
         (parse "")
@@ -25,3 +30,5 @@ spec = do
       shouldBe
         (parse "> main = putStrLn \"hello world\"")
         [CodeBlock ["main = putStrLn \"hello world\""]]
+
+
